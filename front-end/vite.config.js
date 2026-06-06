@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
 
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'https://interviewagent-production-ac57.up.railway.app/',
         changeOrigin: true,
 
         rewrite: (path) => path.replace(/^\/api/, ''),
