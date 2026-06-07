@@ -131,6 +131,10 @@ for chat in all_chats:
         "interview_topic",
         ""
     )
+    chat.setdefault(
+        "last_topic",
+        ""
+    )
 
     chat.setdefault(
         "current_question",
@@ -247,6 +251,7 @@ def create_chat():
         "resume_interview": False,
 
         "interview_topic": "",
+        "last_topic": "",
 
         "current_question": "",
 
@@ -464,6 +469,13 @@ def send_message(payload: MessageRequest):
             )
 
         topic = topic.strip()
+
+        if not topic:
+
+            topic = chat.get(
+                "last_topic",
+                ""
+            )
 
         if not topic:
 
@@ -799,6 +811,28 @@ Instructions:
     )
 
     bot_reply = response.text
+    topic_prompt = f"""
+Identify the main topic of this user message.
+
+Message:
+{payload.message}
+
+Return ONLY the topic name.
+"""
+
+    try:
+
+        topic_response = model.generate_content(
+            topic_prompt
+        )
+
+        chat["last_topic"] = (
+            topic_response.text.strip()
+        )
+
+    except:
+
+        pass
 
     chat["messages"].append(
         {
